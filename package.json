@@ -1,59 +1,47 @@
 {
-  "scripts": {
-    "bootstrap": "lerna bootstrap",
-    "build": "lerna run build",
-    "pretest": "npm run lint",
-    "test": "lerna run test",
-    "lint": "lerna run lint",
-    "coverage.submit": "codecov",
-    "prerelease": "npm run lint",
-    "release": "lerna run release"
-  },
-  "devDependencies": {
-    "@semantic-release/changelog": "^3.0.0",
-    "@semantic-release/git": "^7.0.0",
-    "babel-core": "^6.26.0",
-    "babel-eslint": "^10.0.0",
-    "babel-jest": "^23.0.0",
-    "babel-plugin-external-helpers": "^6.22.0",
-    "babel-plugin-transform-async-to-generator": "^6.24.1",
-    "babel-plugin-transform-class-properties": "^6.24.1",
-    "babel-plugin-transform-object-rest-spread": "^6.26.0",
-    "babel-preset-env": "^1.7.0",
-    "chai": "^4.1.0",
-    "chai-spies": "^1.0.0",
-    "codecov": "^3.0.0",
-    "eslint": "^5.0.0",
-    "eslint-config-airbnb-base": "^13.0.0",
-    "eslint-plugin-import": "^2.9.0",
-    "husky": "^1.2.0",
-    "jest": "^23.0.0",
-    "lerna": "^3.4.3",
-    "lint-staged": "^8.1.0",
-    "rollup": "^0.68.0",
-    "rollup-plugin-babel": "^3.0.3",
-    "rollup-plugin-commonjs": "^9.0.0",
-    "rollup-plugin-node-resolve": "^3.0.0",
-    "rollup-plugin-uglify": "^4.0.0",
-    "semantic-release": "15.9.17",
-    "semantic-release-monorepo": "^6.1.1",
-    "tslib": "^1.9.3",
-    "typescript": "3.1.6"
-  },
-  "version": "0.0.0-development",
+  "name": "@casl/ability",
+  "version": "2.5.1",
+  "description": "CASL is an isomorphic authorization JavaScript library which restricts what resources a given user is allowed to access",
+  "main": "dist/umd/index.js",
+  "module": "dist/es5m/index.js",
+  "es2015": "dist/es6/index.js",
+  "typings": "./index.d.ts",
   "repository": {
     "type": "git",
     "url": "https://github.com/stalniy/casl.git"
   },
-  "husky": {
-    "hooks": {
-      "pre-commit": "lint-staged"
-    }
+  "homepage": "https://stalniy.github.io/casl/",
+  "publishConfig": {
+    "access": "public"
   },
-  "lint-staged": {
-    "**/*.js": [
-      "npm run lint",
-      "git add"
-    ]
+  "scripts": {
+    "build.es": "rollup -c ../../tools/rollup.es.js -e sift",
+    "build.umd": "rollup -c ../../tools/rollup.umd.js -e sift -n casl -g sift:sift",
+    "build.es5m": "rollup -c ../../tools/rollup.es5m.js -e sift",
+    "build.extra.es": "rollup -c ../../tools/rollup.es.js -i src/extra.js -o dist/es6/extra.js",
+    "build.extra.es5m": "rollup -c ../../tools/rollup.es5m.js -i src/extra.js -o dist/es5m/extra.js",
+    "build.extra.umd": "rollup -c ../../tools/rollup.umd.js -i src/extra.js -o dist/umd/extra.js -n casl.extra",
+    "build.extra": "npm run build.extra.es && npm run build.extra.es5m && npm run build.extra.umd",
+    "build": "npm run build.es && npm run build.umd && npm run build.es5m && npm run build.extra",
+    "lint": "eslint src/",
+    "test": "NODE_ENV=test jest --config ../../tools/jest.config.js",
+    "prerelease": "npm test && NODE_ENV=production npm run build",
+    "release": "semantic-release -e semantic-release-monorepo -e ../../tools/semantic-release"
+  },
+  "keywords": [
+    "access control",
+    "authorization",
+    "acl",
+    "cancan",
+    "security",
+    "permissions"
+  ],
+  "author": "Sergii Stotskyi <sergiy.stotskiy@freaksidea.com>",
+  "license": "MIT",
+  "engines": {
+    "npm": "^6.0.0"
+  },
+  "dependencies": {
+    "sift": "^7.0.1"
   }
 }
